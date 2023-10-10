@@ -76,6 +76,7 @@ void setup() {
     strip.setBrightness(BRIGHTNESS);
 
     apple1.spawn_random();
+    randomSeed(analogRead(0)); // https://www.arduino.cc/reference/en/language/functions/random-numbers/random/
     apple1.show();
 
     snake1.color = strip.Color(255, 0, 0);
