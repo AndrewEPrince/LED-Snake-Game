@@ -13,7 +13,7 @@ constexpr int TOTAL_LEDS = NUM_LED_STRIPS * LEDS_PER_STRIP;
 
 Adafruit_NeoPixel strip(NUM_LED_STRIPS * LEDS_PER_STRIP, LED_PIN, NEO_GRB + NEO_KHZ800);
 
-int wait = 500;
+int wait = 250; // was 500
 
 int left_button_state = 0;
 int up_button_state = 0;
@@ -58,7 +58,7 @@ public:
     bool is_switched = false;
     bool row_is_odd = false;
 
-    void update(Apple apple1);
+    void update();
     void change_direction(Direction new_direction);
     void show();
 };
@@ -71,6 +71,7 @@ public:
     void spawn_random();
     void spawn_at(const int newPosition[2]);
     void show();
+    bool check_collision(Snake);
 };
 
 int position_to_i(const int position[2]);
@@ -114,7 +115,7 @@ void loop() {
     Serial.print(", vy = ");
     Serial.println(snake1.velocity[1]);
     check_inputs(snake1);
-    snake1.update(apple1);
+    snake1.update();
     delay(wait);
 }
 
@@ -171,7 +172,7 @@ int Array::operator[](int index) const {
   }
 }
 
-void Snake::update(Apple apple1) {
+void Snake::update() {
     change_direction(current_direction);
     prev_position[1] = position[1];
     prev_position[0] = position[0];
@@ -182,11 +183,11 @@ void Snake::update(Apple apple1) {
     if (!row_is_odd && !is_switched) {
         position[0] = (((position[0] + velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
     }
-    else if (row_is_odd and !is_switched) {
+    else if (row_is_odd && !is_switched) {
         position[0] = LEDS_PER_STRIP - 1 - (((position[0] + velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
         is_switched = true;
     }
-    else if (!row_is_odd and is_switched) {
+    else if (!row_is_odd && is_switched) {
         position[0] = LEDS_PER_STRIP - 1 - (((position[0] + velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
         is_switched = false;
     }
@@ -197,10 +198,12 @@ void Snake::update(Apple apple1) {
   	segments_x.push_back(position[0]);
   	segments_y.push_back(position[1]);
   
-    if (position[0] == apple1.position[0] and position[1] == apple1.position[1]) {
+    if (position[0] == apple1.position[0] && position[1] == apple1.position[1]) {
+        length++;
+      	Serial.print("Length: "); // once you eat the second apple, length does not print to serialmonitor
+        Serial.println(length);
         apple1.spawn_random();
       	apple1.show();
-      	length++;
     }
     else if (length < segments_x.get_size()) {
         strip.setPixelColor(xy_to_i(segments_x[0], segments_y[0]), strip.Color(0,0,0));
@@ -258,8 +261,25 @@ void Snake::show() {
 }
 
 void Apple::spawn_random() {
-    position[0] = rand() % LEDS_PER_STRIP;
-    position[1] = rand() % NUM_LED_STRIPS;
+    do {
+        position[0] = rand() % LEDS_PER_STRIP;
+        position[1] = rand() % NUM_LED_STRIPS;
+    } while (check_collision(snake1));
+  Serial.print("Apple spawned at (");
+  Serial.print(position[0]);
+  Serial.print(", ");
+  Serial.print(position[1]);
+  Serial.print(")\n");
+}
+
+// True if apple is inside snake : false otherwise
+bool Apple::check_collision(Snake snake1) {
+  for (int i = 0; i < snake1.length; i++){
+    if (snake1.segments_x[i] == position[0] && snake1.segments_y[i] == position[1]){
+      return true;
+    }
+  }
+  return false;
 }
 
 void Apple::show() {
