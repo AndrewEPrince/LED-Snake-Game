@@ -1,5 +1,4 @@
 #include <Adafruit_NeoPixel.h>
-
 constexpr int LED_PIN = 2;
 constexpr int LEFT_BUTTON_PIN = 10;
 constexpr int UP_BUTTON_PIN = 11;
@@ -13,7 +12,8 @@ constexpr int TOTAL_LEDS = NUM_LED_STRIPS * LEDS_PER_STRIP;
 
 Adafruit_NeoPixel strip(NUM_LED_STRIPS * LEDS_PER_STRIP, LED_PIN, NEO_GRB + NEO_KHZ800);
 
-int wait = 250; // was 500
+int wait = 500; // was 500
+int score = 0;
 
 int left_button_state = 0;
 int up_button_state = 0;
@@ -57,10 +57,13 @@ public:
     uint32_t color;
     bool is_switched = false;
     bool row_is_odd = false;
+    bool is_alive = true;
 
     void update();
     void change_direction(Direction new_direction);
     void show();
+ 	bool head_on_position(int x, int y);
+    void check_death(); 
 };
 
 class Apple {
@@ -106,6 +109,9 @@ void setup() {
 
 
 void loop() {
+
+  if(snake1.is_alive) {
+    snake1.update();
     Serial.print("px = ");
     Serial.print(snake1.position[0]);
     Serial.print(", py = ");
@@ -114,9 +120,19 @@ void loop() {
     Serial.print(snake1.velocity[0]);
     Serial.print(", vy = ");
     Serial.println(snake1.velocity[1]);
-    check_inputs(snake1);
-    snake1.update();
-    delay(wait);
+  // Yousif's 60FPS hack :D
+    for (int i = 0; i < 30; i++) {
+  	check_inputs(snake1);
+    delay(16);
+    }
+  }
+  else { // When you die
+      //call end_screen
+    Serial.println("ENDGAME STATE");
+    strip.clear(); // Not working bc of TinkerCad(?)
+    return;
+  }
+    //delay(wait);
 }
 
 void check_inputs(Snake &snake1) {
@@ -200,6 +216,7 @@ void Snake::update() {
   
     if (position[0] == apple1.position[0] && position[1] == apple1.position[1]) {
         length++;
+        score++;
       	Serial.print("Length: "); // once you eat the second apple, length does not print to serialmonitor
         Serial.println(length);
         apple1.spawn_random();
@@ -211,7 +228,16 @@ void Snake::update() {
       	segments_y.pop_back();
         Serial.println("POPPED");
     }
+  if (snake1.is_alive) {
+  	snake1.check_death();
+  }
+  if (!snake1.is_alive) {
+    Serial.println("YOU'RE DEAD");
+    strip.clear();
+  } else {
     snake1.show();
+  }
+  
 }
 
 void Snake::change_direction(Direction direction) {
@@ -258,6 +284,18 @@ void Snake::show() {
     strip.setPixelColor(position_to_i(prev_position), strip.Color(0, 0, 0));
     strip.show();
   */
+}
+
+bool Snake::head_on_position(int xPos, int yPos) {
+  return (segments_x[0] == xPos && segments_y[0] == yPos);
+}
+
+void Snake::check_death() {
+  for (int i = 1; i < length; i++) {
+    if (head_on_position(segments_x[i], segments_y[i])) {
+      is_alive = false;
+    }
+  }
 }
 
 void Apple::spawn_random() {
