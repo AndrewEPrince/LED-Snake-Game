@@ -5,6 +5,9 @@
 Link: https://www.tinkercad.com/things/86gE4TddCnd-copy-of-snakegame0/editel?sharecode=URl8Z13AbfqSCvDlEreNeNz4lCauGtTsWst3pxsr4cM
 
 # Change Log
+10-17-2023 - Yousif, Bryan, Alexander: Introduced death & endgame state, increased input polling to about 60 times/second, and added a score int that increments when an apple is eaten.
+
+
 10-17-2023 - Bryan: Fixed bugs with the snake not growing and multiple apples spawning.
 
 
