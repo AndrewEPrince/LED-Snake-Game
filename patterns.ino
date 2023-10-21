@@ -1,0 +1,37 @@
+void raindow_x(const int offset) {
+    int x;
+    int y;
+    strip.clear();
+    for (int i = 0; i < TOTAL_LEDS; i++) {
+        y = i_to_y(i);
+        x = ((i_to_x(i, y) + offset % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
+        strip.setPixelColor(i, strip.ColorHSV(x * 65535 / TOTAL_LEDS * LEDS_PER_STRIP, 255, 255));
+    }
+    strip.show();
+}
+
+void raindow_y(const int offset) {
+    int x;
+    int y;
+    strip.clear();
+    for (int i = 0; i < TOTAL_LEDS; i++) {
+        y = (((i_to_y(i) + offset) % NUM_LED_STRIPS) + NUM_LED_STRIPS) % NUM_LED_STRIPS;
+        x = i_to_x(i, y);
+        strip.setPixelColor(i, strip.ColorHSV(y * 65535 / TOTAL_LEDS * LEDS_PER_STRIP, 255, 255));
+    }
+    strip.show();
+}
+
+void rainbow_waterfall_x(const int loops) {
+    for (int i = 0; i < loops; i++) {
+        raindow_x(-i);
+        delay(100);
+    }
+}
+
+void rainbow_waterfall_y(const int loops) {
+    for (int i = 0; i < loops; i++) {
+        raindow_y(-i);
+        delay(100);
+    }
+}
