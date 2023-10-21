@@ -1,6 +1,6 @@
 // External Libraries
-#include <Adafruit_NeoPixel.h>
-#include <vector>
+// #include <Adafruit_NeoPixel.h> UNUSED!
+// #include <vector> UNUSED!
 
 // Internal Libraries
 #include <apple.h>
