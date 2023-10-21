@@ -1,7 +1,16 @@
+void solid_raindow(const int loops, const int wait) {
+	for (int i = 0; i < loops; i++) {
+      for (int j = 0; j < 65535; j+=655) {
+        strip.fill(strip.ColorHSV(j, 255, 255),0 , TOTAL_LEDS);
+        strip.show();
+        delay(10);
+      }
+    }
+}
+
 void raindow_x(const int offset) {
     int x;
     int y;
-    strip.clear();
     for (int i = 0; i < TOTAL_LEDS; i++) {
         y = i_to_y(i);
         x = ((i_to_x(i, y) + offset % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
@@ -13,7 +22,6 @@ void raindow_x(const int offset) {
 void raindow_y(const int offset) {
     int x;
     int y;
-    strip.clear();
     for (int i = 0; i < TOTAL_LEDS; i++) {
         y = (((i_to_y(i) + offset) % NUM_LED_STRIPS) + NUM_LED_STRIPS) % NUM_LED_STRIPS;
         x = i_to_x(i, y);
@@ -40,7 +48,6 @@ void random_hsv(const int loops, const int wait) {
   int x;
   int y;
   for (int i = 0; i < loops; i++) {
-        strip.clear();
     for (int i = 0; i < TOTAL_LEDS; i++) {
         y = i_to_y(i);
         x = i_to_x(i, y);
