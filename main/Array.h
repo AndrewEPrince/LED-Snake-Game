@@ -1,7 +1,7 @@
 #include <init.h>
 class Array {
 private:
-    int data[TOTAL_LEDS]; // TODO: Replace "64" with "TOTAL_LEDS"
+    int data[TOTAL_LEDS];
     int size;
 
 public:
