@@ -31,7 +31,7 @@ class SevenSegment {
     void showSeven();
     void showEight();
     void showNine();
-    void turnOffAllSegments();
+    void AllturnOffSegments();
     void selectThirdDigit();
     void selectFirstDigit();
     void selectSecondDigit();
@@ -54,6 +54,9 @@ class Timer {
 //This section sets up the timer by setting tens to 6 and ones to 0. 
 //It also sets the interval to 1000UL or 1 second. 
   private: 
+    const int fTens = 6;
+    const int fOnes = 0;
+    const int fSeconds = 60;
     int tens = 6;
     int ones = 0;
     unsigned long previousMillis = 0;
@@ -66,6 +69,7 @@ class Timer {
     void restart();
     void updateTimeByFrame();
     void showTime(SevenSegment sSegment);
+    void flashZeroes();
 };
 
 SevenSegment sevenSegment;
@@ -88,12 +92,14 @@ void loop() {
   timer.showTime(sevenSegment);
   sScore.showScore(sevenSegment, 32);
 
-  if (timer.isTimeOver) {
-    // GAMEOVER :(
-    timer.restart();
+
+//When the timer ends, the timer section of the display will go to zero and stay there. 
+ if (timer.isTimeOver) {
+    sevenSegment.selectFirstDigit();
+    sevenSegment.selectSecondDigit();
+    sevenSegment.showZero();
   }
 }
-
 
 //This is the ShowScore method to show the score (as implied)
 void ShowScore::showScore(SevenSegment sSegment, int value) {
@@ -114,15 +120,17 @@ void ShowScore::showScore(SevenSegment sSegment, int value) {
 
 //This restarts the timer 
 void Timer::restart() {
-  seconds = 60;
+  seconds = fSeconds;
   isTimeOver = false;
-  ones = 0;
-  tens = 6;
+  ones = fOnes;
+  tens = fTens;
 }
 
 
 //Updates time by frame
 void Timer::updateTimeByFrame() {
+  if (isTimeOver) return;
+
   if ((millis() - previousMillis) > interval) {
       previousMillis += interval;
       seconds--;
@@ -308,7 +316,7 @@ void SevenSegment::showNine(){
 }
 
 //Turns off all of the segments
-void SevenSegment::turnOffAllSegments(){
+void SevenSegment::AllturnOffSegments(){
   digitalWrite(pinA, LOW);
   digitalWrite(pinB, LOW);
   digitalWrite(pinC, LOW);
