@@ -3,7 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/main",
+                "C:\\msys64\\mingw64\\lib\\adafruit\\Adafruit_NeoPixel-1.11.1"
             ],
             "defines": [
                 "_DEBUG",
