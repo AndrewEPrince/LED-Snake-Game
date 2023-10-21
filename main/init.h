@@ -1,3 +1,4 @@
+#include <Adafruit_NeoPixel.h>
 constexpr int LED_PIN = 2;
 constexpr int LEFT_BUTTON_PIN = 10;
 constexpr int UP_BUTTON_PIN = 11;
@@ -8,3 +9,4 @@ constexpr int NUM_LED_STRIPS = 8;
 constexpr int LEDS_PER_STRIP = 8;
 constexpr int BRIGHTNESS = 255;
 constexpr int TOTAL_LEDS = NUM_LED_STRIPS * LEDS_PER_STRIP;
+Adafruit_NeoPixel strip(NUM_LED_STRIPS * LEDS_PER_STRIP, LED_PIN, NEO_GRB + NEO_KHZ800);
