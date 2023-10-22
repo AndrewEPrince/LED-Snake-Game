@@ -1,4 +1,7 @@
-#include <cstdint>
+//#include <cstdint> // Might not work with Arduino : replace later
+#include <stdint.h>
+#include "init.h"
+#include "snake.h"
 class Apple {
     public:
         int position[2]; // Position of the apple

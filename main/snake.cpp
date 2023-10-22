@@ -1,5 +1,5 @@
-#include <snake.h>
-#include <utilities.h>
+#include "snake.h"
+#include "utilities.h"
 
 void Snake::change_direction(Direction direction) {
     switch (direction) {

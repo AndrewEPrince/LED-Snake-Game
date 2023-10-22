@@ -1,3 +1,5 @@
+#include "7segment.h"
+
 // SEVEN SEGMENTS METHODS
 void SevenSegment::setup() {
   pinMode(pinA, OUTPUT);
@@ -18,25 +20,25 @@ void SevenSegment::setup() {
 //This displays the digit based on whatever single digit integer is passed to it. 
 void SevenSegment::displayDigit(int value) {
   if (value == 0) {
-    sevenSegment.showZero();
+    showZero();
   } else if (value == 1) {
-    sevenSegment.showOne();
+    showOne();
   } else if (value == 2) {
-    sevenSegment.showTwo();
+    showTwo();
   } else if (value == 3) {
-    sevenSegment.showThree();
+    showThree();
   } else if (value == 4) {
-    sevenSegment.showFour();
+    showFour();
   } else if (value == 5) {
-    sevenSegment.showFive();
+    showFive();
   } else if (value == 6) {
-    sevenSegment.showSix();
+    showSix();
   } else if (value == 7) {
-    sevenSegment.showSeven();
+    showSeven();
   } else if (value == 8) {
-    sevenSegment.showEight();
+    showEight();
   } else if (value == 9) {
-    sevenSegment.showNine();
+    showNine();
   } else {
   }
 }

@@ -1,4 +1,4 @@
-#include <init.h>
+#include "init.h"
 
 void check_inputs(Snake &snake1) {
     left_button_state = digitalRead(LEFT_BUTTON_PIN);

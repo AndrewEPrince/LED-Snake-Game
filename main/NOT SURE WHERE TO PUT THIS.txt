@@ -1,0 +1,44 @@
+
+SevenSegment sevenSegment;
+Timer timer;
+ShowScore sScore;
+
+void setup() {
+  //Sets all segments & digits as outputs
+  sevenSegment.setup();
+}
+
+void loop() {
+  //This loops forever, and ever, and ever, and ever...
+  //Updates timer
+  timer.updateTimeByFrame();
+  
+  //Shows the timer and shows the score by refering to the methods
+  timer.showTime(sevenSegment);
+  sScore.showScore(sevenSegment, 32);
+
+
+//When the timer ends, the timer section of the display will go to zero and stay there. 
+ if (timer.isTimeOver) {
+    sevenSegment.selectFirstDigit();
+    sevenSegment.selectSecondDigit();
+    sevenSegment.showZero();
+  }
+}
+
+//This is the ShowScore method to show the score (as implied)
+void ShowScore::showScore(SevenSegment sSegment, int value) {
+  int dNumber = 2;
+  int ones = value % 10;
+  int tens = value / 10;
+  
+  sSegment.selectThirdDigit();
+  sSegment.displayDigit(tens);
+
+  delay(dNumber);
+
+  sSegment.selectFourthDigit();
+  sSegment.displayDigit(ones);
+
+  delay(dNumber);
+}

@@ -3,9 +3,9 @@
 // #include <vector> UNUSED!
 
 // Internal Libraries
-#include <apple.h>
-#include <init.h>
-#include <snake.h>
+#include "apple.h"
+#include "init.h"
+#include "snake.h"
 
 void setup() {
     Serial.begin(9600);

@@ -1,5 +1,5 @@
-#include <Array.h>
-#include <init.h>
+#include "Array.h"
+#include "init.h"
 
 int Array::get_size() const {
   return size;

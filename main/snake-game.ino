@@ -1,5 +1,5 @@
 #include <Adafruit_NeoPixel.h>
-#include <snake.h>
+#include "snake.h"
 constexpr int LED_PIN = 2;
 constexpr int LEFT_BUTTON_PIN = 10;
 constexpr int UP_BUTTON_PIN = 11;
