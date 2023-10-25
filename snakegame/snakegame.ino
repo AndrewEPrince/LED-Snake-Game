@@ -1,4 +1,4 @@
-#include <arduino.h>
+#include <Arduino.h>
 #include <stdint.h>
 #include <Adafruit_NeoPixel.h>
 

@@ -1,3 +1,6 @@
+#ifndef PATTERNS_H
+#define PATTERNS_H
+
 void solid_rainbow(const int loops, const int wait) {
 	for (int i = 0; i < loops; i++) {
       for (int j = 0; j < 65535; j+=655) {
@@ -57,3 +60,5 @@ void random_hsv(const int loops, const int wait) {
         delay(wait);
     }
 }
+
+#endif

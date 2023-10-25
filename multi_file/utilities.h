@@ -1,10 +1,14 @@
+#ifndef UTILITIES_H
+#define UTILITIES_H
+
+#include <Arduino.h>
 #include "init.h"
 
 void check_inputs(Snake &snake1) {
-    left_button_state = digitalRead(LEFT_BUTTON_PIN);
-    up_button_state = digitalRead(UP_BUTTON_PIN);
-    down_button_state = digitalRead(DOWN_BUTTON_PIN);
-    right_button_state = digitalRead(RIGHT_BUTTON_PIN);
+    int left_button_state = digitalRead(LEFT_BUTTON_PIN);
+    int up_button_state = digitalRead(UP_BUTTON_PIN);
+    int down_button_state = digitalRead(DOWN_BUTTON_PIN);
+    int right_button_state = digitalRead(RIGHT_BUTTON_PIN);
 
     if (left_button_state == HIGH) {
         snake1.change_direction(Direction::LEFT);
@@ -40,3 +44,5 @@ int i_to_y(const int i) {
 int xy_to_i(const int x, const int y) {
     return x + NUM_LED_STRIPS * y;
 }
+
+#endif

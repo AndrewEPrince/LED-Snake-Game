@@ -1,7 +1,9 @@
-//#include <cstdint> // Might not work with Arduino : replace later
+#ifndef APPLE_H
+#define APPLE_H
+
 #include <stdint.h>
-#include "init.h"
 #include "snake.h"
+#include "init.h"
 class Apple {
     public:
         int position[2]; // Position of the apple
@@ -10,5 +12,7 @@ class Apple {
         void spawn_random();
         void spawn_at(const int newPosition[2]);
         void show();
-        bool check_collision(Snake);
+        bool check_collision(Snake snake1);
 };
+
+#endif

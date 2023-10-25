@@ -1,3 +1,6 @@
+#ifndef TIMER_H
+#define TIMER_H
+
 #include "7segment.h"
 //This shows the score from the value passed to it.
 
@@ -32,4 +35,6 @@ class Timer {
     void showTime(SevenSegment sSegment);
     void flashZeroes();
 };
+
+#endif
 

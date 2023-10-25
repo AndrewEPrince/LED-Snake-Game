@@ -1,3 +1,5 @@
+#ifndef ARRAY_H
+#define ARRAY_H
 #include "init.h"
 class Array {
 private:
@@ -12,3 +14,5 @@ public:
     int get_size() const;
     int operator[](int index) const;
 };
+
+#endif

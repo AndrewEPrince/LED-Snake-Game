@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include "7segment.h"
 
 // SEVEN SEGMENTS METHODS

@@ -1,3 +1,6 @@
+#ifndef SEVEN_SEGMENT_H
+#define SEVEN_SEGMENT_H
+
 class SevenSegment {
   private:
 
@@ -44,3 +47,5 @@ class ShowScore {
   public:
     void showScore(SevenSegment sSegment, int value);  
 };
+
+#endif

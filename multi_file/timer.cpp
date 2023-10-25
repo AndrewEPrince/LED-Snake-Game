@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include "timer.h"
 
 
@@ -33,13 +34,13 @@ void Timer::updateTimeByFrame() {
 void Timer::showTime(SevenSegment sSegment) {
   int dNumber = 2;
   
-  sevenSegment.selectFirstDigit();
-  sevenSegment.displayDigit(tens);
+  sSegment.selectFirstDigit();
+  sSegment.displayDigit(tens);
 
   delay(dNumber);
 
-  sevenSegment.selectSecondDigit();
-  sevenSegment.displayDigit(ones);
+  sSegment.selectSecondDigit();
+  sSegment.displayDigit(ones);
 
   delay(dNumber);
 }

@@ -1,12 +1,14 @@
+#include <Adafruit_NeoPixel.h>
+#include "snake.h"
+#include "utilities.h"
 #include "apple.h"
 
 // RECOMEND CREATING A NEW CLASS TO CONTROL DE SPAWN
-void Apple::spawn_random() {
-    do {
+void Apple::spawn_random() { // Accounting for snake collision in Snake update
         // random(0, TOTAL_LEDS) -> We make sure that the limit is always within the number of LEDs
         position[0] = random(0, TOTAL_LEDS) % LEDS_PER_STRIP;
         position[1] = random(0, TOTAL_LEDS) % NUM_LED_STRIPS;
-    } while (check_collision(snake1)); // Look for another position if and only if The apple is in the SNAKE
+         // Look for another position if and only if The apple is in the SNAKE
 
 
     // Show the position of the apple
