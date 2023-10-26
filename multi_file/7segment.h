@@ -40,6 +40,7 @@ class SevenSegment {
     void selectFourthDigit();
     void selectAll4Digits();
     void displayDigit(int value);
+    void showScore(int value);
 };
 
 //This shows the score from the value passed to it.

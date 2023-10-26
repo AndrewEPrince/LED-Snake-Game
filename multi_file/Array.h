@@ -1,6 +1,7 @@
 #ifndef ARRAY_H
 #define ARRAY_H
 #include "init.h"
+
 class Array {
 private:
     int data[TOTAL_LEDS];

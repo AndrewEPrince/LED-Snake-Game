@@ -201,3 +201,20 @@ void SevenSegment::selectAll4Digits(){
     digitalWrite(D3, LOW);
     digitalWrite(D4, LOW);
 }
+
+void SevenSegment::showScore(int value) {
+  
+  int dNumber = 2;
+  int ones = value % 10;
+  int tens = value / 10;
+  
+  selectThirdDigit();
+  displayDigit(tens);
+
+  delay(dNumber);
+
+  selectFourthDigit();
+  displayDigit(ones);
+
+  delay(dNumber);
+}
