@@ -51,7 +51,7 @@ public:
 
 Snake snake1;
 Apple apple1;
-Adafruit_NeoPixel strip(NUM_LED_STRIPS *LEDS_PER_STRIP, LED_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip(TOTAL_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 int left_button_state = 0;
 int up_button_state = 0;
@@ -143,12 +143,11 @@ void Apple::spawn_random() {
 
 // RECOMEND ADDIDNG THIS METHOD TO THE SNAKE
 bool Apple::check_collision(Snake snake1) {
-  for (int i = 0; i < snake1.length; i++) {                                            // Get the lenght of the snake
+  for (int i = 0; i < snake1.length; i++) {                                            // Get the length of the snake
     if (snake1.segments_x[i] == position[0] && snake1.segments_y[i] == position[1]) {  // Check if the snake position is the same of the apple
       return true;
     }
   }
-
   // IF there is not any collision is false
   return false;
 }
