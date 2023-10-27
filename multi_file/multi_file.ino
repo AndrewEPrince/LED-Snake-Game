@@ -24,7 +24,8 @@ public:
   Array segments_x;
   Array segments_y;
   Direction current_direction;
-  uint32_t color;
+  uint32_t headColor = Adafruit_NeoPixel::Color(255, 0, 0);
+  uint32_t bodyColor = Adafruit_NeoPixel::Color(0, 255, 0);
   bool is_switched = false;
   bool row_is_odd = false;
   bool is_alive = true;
@@ -40,7 +41,7 @@ public:
 class Apple {
 public:
   int position[2];                                       // Position of the apple
-  uint32_t color = Adafruit_NeoPixel::Color(0, 255, 0);  // GREEN COLOR
+  uint32_t color = Adafruit_NeoPixel::Color(0, 0, 255);  // BLUE COLOR
 
   void spawn_random();
   void spawn_at(const int newPosition[2]);
@@ -63,39 +64,98 @@ SevenSegment sevenSegment;
 Timer timer;
 SevenSegment sScore;
 
+// ######################################
+
+void setup() {
+  Serial.begin(9600);
+
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(LEFT_BUTTON_PIN, INPUT);
+  pinMode(UP_BUTTON_PIN, INPUT);
+  pinMode(DOWN_BUTTON_PIN, INPUT);
+  pinMode(RIGHT_BUTTON_PIN, INPUT);
+
+  strip.setBrightness(BRIGHTNESS);
+
+  apple1.spawn_random();
+  apple1.show();
+
+  snake1.position[0] = 2;
+  snake1.position[1] = 2;
+  snake1.velocity[0] = 1;
+  snake1.velocity[1] = 0;
+  snake1.current_direction = Direction::RIGHT;
+
+  sevenSegment.setup();
+}
+
+void loop() {
+  timer.updateTimeByFrame();
+
+  timer.showTime(sevenSegment);
+  sScore.showScore(32);
+
+  if (snake1.is_alive) {
+    snake1.update();
+    Serial.print("px = ");
+    Serial.print(snake1.position[0]);
+    Serial.print(", py = ");
+    Serial.print(snake1.position[1]);
+    Serial.print(", vx = ");
+    Serial.print(snake1.velocity[0]);
+    Serial.print(", vy = ");
+    Serial.println(snake1.velocity[1]);
+    // Yousif's 60FPS hack :D
+    for (int i = 0; i < 30; i++) {
+      snake1.check_inputs();
+      delay(16);
+    }
+  } else {  // When you die
+    //call end_screen
+    Serial.println("ENDGAME STATE");
+    strip.clear();  // Not working bc of TinkerCad(?)
+    return;
+  }
+  //delay(wait);
+
+  if (timer.isTimeOver) {  // GAMEOVER
+    timer.restart();
+  }
+}
+
 // INITIALIZE CLASSES
 // #APPLE CLASS
 void Apple::spawn_random() {
-    do {
-        // random(0, TOTAL_LEDS) -> We make sure that the limit is always within the number of LEDs
-        position[0] = random(0, TOTAL_LEDS) % LEDS_PER_STRIP;
-        position[1] = random(0, TOTAL_LEDS) % NUM_LED_STRIPS;
-    } while (check_collision(snake1)); // Look for another position if and only if The apple is in the SNAKE
+  do {
+    // random(0, TOTAL_LEDS) -> We make sure that the limit is always within the number of LEDs
+    position[0] = random(0, TOTAL_LEDS) % LEDS_PER_STRIP;
+    position[1] = random(0, TOTAL_LEDS) % NUM_LED_STRIPS;
+  } while (check_collision(snake1));  // Look for another position if and only if The apple is in the SNAKE
 
 
-    // Show the position of the apple
-    Serial.print("Apple spawned at (");
-    Serial.print(position[0]);
-    Serial.print(", ");
-    Serial.print(position[1]);
-    Serial.print(")\n");
+  // Show the position of the apple
+  Serial.print("Apple spawned at (");
+  Serial.print(position[0]);
+  Serial.print(", ");
+  Serial.print(position[1]);
+  Serial.print(")\n");
 }
 
 // RECOMEND ADDIDNG THIS METHOD TO THE SNAKE
 bool Apple::check_collision(Snake snake1) {
-    for (int i = 0; i < snake1.length; i++){ // Get the lenght of the snake
-        if (snake1.segments_x[i] == position[0] && snake1.segments_y[i] == position[1]) { // Check if the snake position is the same of the apple
-            return true;
-        }
+  for (int i = 0; i < snake1.length; i++) {                                            // Get the lenght of the snake
+    if (snake1.segments_x[i] == position[0] && snake1.segments_y[i] == position[1]) {  // Check if the snake position is the same of the apple
+      return true;
     }
+  }
 
-    // IF there is not any collision is false
-    return false;
+  // IF there is not any collision is false
+  return false;
 }
 
 void Apple::show() {
-    strip.setPixelColor(position_to_i(position), color);
-    strip.show();
+  strip.setPixelColor(position_to_i(position), color);
+  strip.show();
 }
 // ######################################
 
@@ -166,16 +226,11 @@ bool Snake::head_on_position(int xPos, int yPos) {
 }
 
 void Snake::show() {
-  for (int i = 0; i < length; i++) {
-    strip.setPixelColor(xy_to_i(segments_x[i], segments_y[i]), color);
+  strip.setPixelColor(xy_to_i(segments_x[0], segments_y[0]), headColor);
+  for (int i = 1; i < length; i++) {
+    strip.setPixelColor(xy_to_i(segments_x[i], segments_y[i]), bodyColor);
     strip.show();
   }
-
-  /*
-  strip.setPixelColor(position_to_i(position), color);
-    strip.setPixelColor(position_to_i(prev_position), strip.Color(0, 0, 0));
-    strip.show();
-  */
 }
 
 void Snake::update() {
@@ -224,63 +279,3 @@ void Snake::update() {
     snake1.show();
   }
 }
-// ######################################
-
-void setup() {
-  Serial.begin(9600);
-
-  pinMode(LED_PIN, OUTPUT);
-  pinMode(LEFT_BUTTON_PIN, INPUT);
-  pinMode(UP_BUTTON_PIN, INPUT);
-  pinMode(DOWN_BUTTON_PIN, INPUT);
-  pinMode(RIGHT_BUTTON_PIN, INPUT);
-
-  strip.setBrightness(BRIGHTNESS);
-
-  apple1.spawn_random();
-  apple1.show();
-
-  snake1.color = strip.Color(255, 0, 0);
-  snake1.position[0] = 2;
-  snake1.position[1] = 2;
-  snake1.velocity[0] = 1;
-  snake1.velocity[1] = 0;
-  snake1.current_direction = Direction::RIGHT;
-
-  sevenSegment.setup();
-}
-
-void loop() {
-  timer.updateTimeByFrame();
-
-  timer.showTime(sevenSegment);
-  sScore.showScore(32);
-
-  if (snake1.is_alive) {
-    snake1.update();
-    Serial.print("px = ");
-    Serial.print(snake1.position[0]);
-    Serial.print(", py = ");
-    Serial.print(snake1.position[1]);
-    Serial.print(", vx = ");
-    Serial.print(snake1.velocity[0]);
-    Serial.print(", vy = ");
-    Serial.println(snake1.velocity[1]);
-    // Yousif's 60FPS hack :D
-    for (int i = 0; i < 30; i++) {
-      snake1.check_inputs();
-      delay(16);
-    }
-  } else {  // When you die
-    //call end_screen
-    Serial.println("ENDGAME STATE");
-    strip.clear();  // Not working bc of TinkerCad(?)
-    return;
-  }
-  //delay(wait);
-
-  if (timer.isTimeOver) {  // GAMEOVER
-    timer.restart();
-  }
-}
-
