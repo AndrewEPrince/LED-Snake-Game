@@ -11,6 +11,7 @@ int Array::operator[](int index) const {
     return data[index];
   } else {
     Serial.println("Index out of bounds");
+    return -1;
     //Serial.println(index);
   }
 }

@@ -18,9 +18,9 @@ enum class Direction {
 
 class Snake {
 public:
-  int position[2];
+  int position[2] = {START_X, START_Y};
   int velocity[2];
-  int length = 3;
+  int length = 9;
   Array segments_x;
   Array segments_y;
   Direction current_direction;
@@ -76,12 +76,11 @@ void setup() {
   pinMode(RIGHT_BUTTON_PIN, INPUT);
 
   strip.setBrightness(BRIGHTNESS);
+  strip.clear();
 
   apple1.spawn_random();
   apple1.show();
 
-  snake1.position[0] = 2;
-  snake1.position[1] = 2;
   snake1.velocity[0] = 1;
   snake1.velocity[1] = 0;
   snake1.current_direction = Direction::RIGHT;
@@ -101,6 +100,8 @@ void loop() {
     Serial.print(snake1.position[0]);
     Serial.print(", py = ");
     Serial.print(snake1.position[1]);
+    Serial.print(", i = ");
+    Serial.print(position_to_i(snake1.position));
     Serial.print(", vx = ");
     Serial.print(snake1.velocity[0]);
     Serial.print(", vy = ");
@@ -225,11 +226,11 @@ bool Snake::head_on_position(int xPos, int yPos) {
 }
 
 void Snake::show() {
-  strip.setPixelColor(xy_to_i(segments_x[0], segments_y[0]), headColor);
-  for (int i = 1; i < length; i++) {
+  for (int i = 0; i < length - 1; i++) {
     strip.setPixelColor(xy_to_i(segments_x[i], segments_y[i]), bodyColor);
-    strip.show();
   }
+  strip.setPixelColor(xy_to_i(segments_x[length - 1], segments_y[length - 1]), headColor);
+  strip.show();
 }
 
 void Snake::update() {
@@ -239,15 +240,15 @@ void Snake::update() {
 
 // Add velocity to position
   position[0] += velocity[0];
-  position[0] %= LEDS_PER_STRIP;
   position[1] += velocity[1];
-  position[1] %= NUM_LED_STRIPS;
   if (position[0] < 0) {
-    position[0] += LEDS_PER_STRIP;
+    position[0] += NUM_LED_STRIPS;
   }
   if (position[1] < 0) {
-    position[1] += NUM_LED_STRIPS;
+    position[1] += LEDS_PER_STRIP;
   }
+  position[0] %= NUM_LED_STRIPS;
+  position[1] %= LEDS_PER_STRIP;
 
   // if (!row_is_odd && !is_switched) {
   //   position[0] = (((position[0] + velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
@@ -276,7 +277,7 @@ void Snake::update() {
     strip.setPixelColor(xy_to_i(segments_x[0], segments_y[0]), strip.Color(0, 0, 0));
     segments_x.pop_back();
     segments_y.pop_back();
-    Serial.println("POPPED");
+    //Serial.println("POPPED");
   }
   if (snake1.is_alive) {
     snake1.check_death();

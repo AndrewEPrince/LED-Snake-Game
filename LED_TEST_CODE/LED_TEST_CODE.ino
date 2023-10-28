@@ -14,7 +14,7 @@
 #define LED_COUNT  512
 
 // NeoPixel brightness, 0 (min) to 255 (max)
-#define BRIGHTNESS 100 // Set BRIGHTNESS to about 1/5 (max = 255)
+#define BRIGHTNESS 255 // Set BRIGHTNESS to about 1/5 (max = 255)
 
 // Declare our NeoPixel strip object:
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
@@ -42,9 +42,9 @@ void setup() {
 
 void loop() {
   // Fill along the length of the strip in various colors...
-  colorWipe(strip.Color(255,   0,   0)     , 50); // Red
-  colorWipe(strip.Color(  0, 255,   0)     , 50); // Green
-  colorWipe(strip.Color(  0,   0, 255)     , 50); // Blue
+  colorWipe(strip.Color(255,   255,   255)     , 50); // Red
+  colorWipe(strip.Color(  255, 255,   255)     , 50); // Green
+  colorWipe(strip.Color(  255,   255, 255)     , 50); // Blue
   //colorWipe(strip.Color(  0,   0,   0, 255), 50); // True white (not RGB white)
 
   //whiteOverRainbow(75, 5);
