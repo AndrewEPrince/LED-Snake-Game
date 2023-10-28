@@ -32,4 +32,6 @@ int xy_to_i(const int x, const int y) {
   } else {
     i += x;
   }
+
+  return i;
 }
