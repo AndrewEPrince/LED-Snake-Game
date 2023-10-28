@@ -24,13 +24,13 @@ int i_to_y(const int i) {
 
 int xy_to_i(const int x, const int y) {
   int i = 0;
-  bool row_is_odd = (y % 2 != 0) ? true : false;
+  bool col_is_odd = (y % 2 != 0) ? true : false;
 
-  i += y * LEDS_PER_STRIP;
-  if (row_is_odd) {
-    i += (LEDS_PER_STRIP - 1 - x) % LEDS_PER_STRIP;
+  i += x * LEDS_PER_STRIP;
+  if (col_is_odd) {
+    i += (LEDS_PER_STRIP - 1 - y) % LEDS_PER_STRIP;
   } else {
-    i += x;
+    i += y;
   }
 
   return i;
