@@ -236,26 +236,36 @@ void Snake::update() {
   change_direction(current_direction);
   prev_position[1] = position[1];
   prev_position[0] = position[0];
-  position[1] = ((((position[1] + velocity[1]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP) % NUM_LED_STRIPS;
 
-  row_is_odd = (position[1] % 2 != 0) ? true : false;
-
-  if (!row_is_odd && !is_switched) {
-    position[0] = (((position[0] + velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
-  } else if (row_is_odd && !is_switched) {
-    position[0] = LEDS_PER_STRIP - 1 - (((position[0] + velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
-    is_switched = true;
-  } else if (!row_is_odd && is_switched) {
-    position[0] = LEDS_PER_STRIP - 1 - (((position[0] + velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
-    is_switched = false;
-  } else if (is_switched) {
-    position[0] = (((position[0] - velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
+// Add velocity to position
+  position[0] += velocity[0];
+  position[0] %= LEDS_PER_STRIP;
+  position[1] += velocity[1];
+  position[1] %= NUM_LED_STRIPS;
+  if (position[0] < 0) {
+    position[0] += LEDS_PER_STRIP;
   }
+  if (position[1] < 0) {
+    position[1] += NUM_LED_STRIPS;
+  }
+
+  // if (!row_is_odd && !is_switched) {
+  //   position[0] = (((position[0] + velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
+  // } else if (row_is_odd && !is_switched) {
+  //   position[0] = LEDS_PER_STRIP - 1 - (((position[0] + velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
+  //   is_switched = true;
+  // } else if (!row_is_odd && is_switched) {
+  //   position[0] = LEDS_PER_STRIP - 1 - (((position[0] + velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
+  //   is_switched = false;
+  // } else if (is_switched) {
+  //   position[0] = (((position[0] - velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
+  // }
+
 
   segments_x.push_back(position[0]);
   segments_y.push_back(position[1]);
 
-  if (position[0] == apple1.position[0] && position[1] == apple1.position[1]) {
+  if (head_on_position(apple1.position[0], apple1.position[1])) {
     length++;
     score++;
     Serial.print("Length: ");  // once you eat the second apple, length does not print to serialmonitor
