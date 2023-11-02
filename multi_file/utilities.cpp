@@ -35,3 +35,9 @@ int xy_to_i(const int x, const int y) {
 
   return i;
 }
+
+void screen_clear(Adafruit_NeoPixel &strip) {
+  for (int i = 0; i < TOTAL_LEDS; i++) {
+    strip.setPixelColor(i, 0, 0, 0);
+  }
+}

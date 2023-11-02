@@ -18,9 +18,9 @@ enum class Direction {
 
 class Snake {
 public:
-  int position[2] = {START_X, START_Y};
+  int position[2] = { START_X, START_Y };
   int velocity[2];
-  int length = 9;
+  int length = 4;
   Array segments_x;
   Array segments_y;
   Direction current_direction;
@@ -40,8 +40,8 @@ public:
 
 class Apple {
 public:
-  int position[2];                                       // Position of the apple
-  uint32_t color = Adafruit_NeoPixel::Color(0, 0, 255);  // BLUE COLOR
+  int position[2];                                         // Position of the apple
+  uint32_t color = Adafruit_NeoPixel::Color(90, 50, 255);  // BLUE-PURPLE COLOR
 
   void spawn_random();
   void spawn_at(const int newPosition[2]);
@@ -76,10 +76,9 @@ void setup() {
   pinMode(RIGHT_BUTTON_PIN, INPUT);
 
   strip.setBrightness(BRIGHTNESS);
-  strip.clear();
+  screen_clear(strip);
 
   apple1.spawn_random();
-  apple1.show();
 
   snake1.velocity[0] = 1;
   snake1.velocity[1] = 0;
@@ -90,10 +89,9 @@ void setup() {
 
 void loop() {
   timer.updateTimeByFrame();
-
   timer.showTime(sevenSegment);
   sScore.showScore(32);
-
+  apple1.show();
   if (snake1.is_alive) {
     snake1.update();
     Serial.print("px = ");
@@ -107,14 +105,14 @@ void loop() {
     Serial.print(", vy = ");
     Serial.println(snake1.velocity[1]);
     // Yousif's 60FPS hack :D
-    for (int i = 0; i < 30; i++) {
+    for (int i = 0; i < 22; i++) {
       snake1.check_inputs();
       delay(16);
     }
   } else {  // When you die
     //call end_screen
     Serial.println("ENDGAME STATE");
-    strip.clear();  // Not working bc of TinkerCad(?)
+    screen_clear(strip);  // Not working bc of TinkerCad(?)
     return;
   }
   //delay(wait);
@@ -129,8 +127,8 @@ void loop() {
 void Apple::spawn_random() {
   do {
     // random(0, TOTAL_LEDS) -> We make sure that the limit is always within the number of LEDs
-    position[0] = random(0, TOTAL_LEDS) % LEDS_PER_STRIP;
-    position[1] = random(0, TOTAL_LEDS) % NUM_LED_STRIPS;
+    position[0] = random(0, TOTAL_LEDS)  % NUM_LED_STRIPS;
+    position[1] = random(0, TOTAL_LEDS) % LEDS_PER_STRIP;
   } while (check_collision(snake1));  // Look for another position if and only if The apple is in the SNAKE
 
 
@@ -194,10 +192,16 @@ void Snake::change_direction(Direction direction) {
 }
 
 void Snake::check_inputs() {
-  left_button_state = digitalRead(LEFT_BUTTON_PIN);
-  up_button_state = digitalRead(UP_BUTTON_PIN);
-  down_button_state = digitalRead(DOWN_BUTTON_PIN);
-  right_button_state = digitalRead(RIGHT_BUTTON_PIN);
+  left_button_state = analogRead(LEFT_BUTTON_PIN) > 512;
+  up_button_state = analogRead(UP_BUTTON_PIN) > 512;
+  // Serial.print("Up: ");
+  // Serial.println(up_button_state);
+  down_button_state = analogRead(DOWN_BUTTON_PIN) > 512;
+  // Serial.print("Down: ");
+  // Serial.println(down_button_state);
+  right_button_state = analogRead(RIGHT_BUTTON_PIN) > 512;
+  // Serial.print("Right: ");
+  // Serial.println(right_button_state);
 
   if (left_button_state == HIGH) {
     change_direction(Direction::LEFT);
@@ -238,7 +242,7 @@ void Snake::update() {
   prev_position[1] = position[1];
   prev_position[0] = position[0];
 
-// Add velocity to position
+  // Add velocity to position
   position[0] += velocity[0];
   position[1] += velocity[1];
   if (position[0] < 0) {
@@ -284,7 +288,7 @@ void Snake::update() {
   }
   if (!snake1.is_alive) {
     Serial.println("YOU'RE DEAD");
-    strip.clear();
+    screen_clear(strip);
   } else {
     snake1.show();
   }
