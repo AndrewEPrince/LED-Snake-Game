@@ -1,9 +1,5 @@
-#include <Vector.h>
-
 #include <Arduino.h>
 #include <stdint.h>
-// #include <vector>
-// #include <queue>
 #include <Adafruit_NeoPixel.h>
 #include "init.h"
 #include "7segment.h"
@@ -276,7 +272,7 @@ void Snake::update() {
   // segmentXVec.insert(0, position[0]);
   // segmentYVec.insert(0, position[1]);
 
-  if (head_on_position(apple1.position[0], apple1.position[1])) {
+  if (apple1.check_collision(snake1)) {
     length++;
     score++;
     Serial.print("Length: ");  // once you eat the second apple, length does not print to serialmonitor
