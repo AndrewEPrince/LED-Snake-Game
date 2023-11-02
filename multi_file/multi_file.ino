@@ -147,7 +147,7 @@ void Apple::spawn_random() {
 // RECOMEND ADDIDNG THIS METHOD TO THE SNAKE
 bool Apple::check_collision(Snake snake1) {
   for (int i = 0; i < snake1.length; i++) {                                            // Get the length of the snake
-    if (snake1.segments_x[i] == position[0] && snake1.segments_y[i] == position[1]) {  // Check if the snake position is the same of the apple
+    if (snake1.segmentXVec.at(i) == position[0] && snake1.segmentYVec.at(i) == position[1]) {  // Check if the snake position is the same of the apple
       return true;
     }
   }
@@ -223,7 +223,7 @@ void Snake::check_inputs() {
 
 void Snake::check_death() {
   for (int i = 1; i < length - 1; i++) {
-    if (head_on_position(segments_x[i], segments_y[i])) {
+    if (head_on_position(segmentXVec.at(i), segmentYVec.at(i)) {
       Serial.print("Segment ");
       Serial.print(i);
       Serial.print(" bonked head\n");
@@ -233,14 +233,14 @@ void Snake::check_death() {
 }
 
 bool Snake::head_on_position(int xPos, int yPos) {
-  return (segments_x[length - 1] == xPos && segments_y[length - 1] == yPos);
+  return (segmentXVec.front() == xPos && segmentYVec.front() == yPos);
 }
 
 void Snake::show() {
-  for (int i = 0; i < length - 1; i++) {
-    strip.setPixelColor(xy_to_i(segments_x[i], segments_y[i]), bodyColor);
+  strip.setPixelColor(xy_to_i(segmentXVec.front(), segmentYVec.front()), headColor);
+  for (int i = 1; i < length - 1; i++) {
+    strip.setPixelColor(xy_to_i(segmentXVec.at(i), segmentYVec.at(i)), bodyColor);
   }
-  strip.setPixelColor(xy_to_i(segments_x[length - 1], segments_y[length - 1]), headColor);
   strip.show();
 }
 
@@ -261,21 +261,11 @@ void Snake::update() {
   position[0] %= NUM_LED_STRIPS;
   position[1] %= LEDS_PER_STRIP;
 
-  // if (!row_is_odd && !is_switched) {
-  //   position[0] = (((position[0] + velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
-  // } else if (row_is_odd && !is_switched) {
-  //   position[0] = LEDS_PER_STRIP - 1 - (((position[0] + velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
-  //   is_switched = true;
-  // } else if (!row_is_odd && is_switched) {
-  //   position[0] = LEDS_PER_STRIP - 1 - (((position[0] + velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
-  //   is_switched = false;
-  // } else if (is_switched) {
-  //   position[0] = (((position[0] - velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
-  // }
 
-
-  segments_x.push_back(position[0]);
-  segments_y.push_back(position[1]);
+  // segments_x.push_back(position[0]);
+  // segments_y.push_back(position[1]);
+  segmentXVec.insert(segmentXVec.begin(), position[0]);
+  segmentYVec.insert(segmentYVec.begin(), position[1]);
 
   if (head_on_position(apple1.position[0], apple1.position[1])) {
     length++;
@@ -284,10 +274,12 @@ void Snake::update() {
     Serial.println(length);
     apple1.spawn_random();
     apple1.show();
-  } else if (length < segments_x.get_size()) {
-    strip.setPixelColor(xy_to_i(segments_x[0], segments_y[0]), strip.Color(0, 0, 0));
-    segments_x.pop_back();
-    segments_y.pop_back();
+  } else if (length < segmentXVec.size()) {
+    strip.setPixelColor(xy_to_i(segmentXVec.front(), segmentYVec.front()), strip.Color(0, 0, 0));
+    // segments_x.pop_back();
+    // segments_y.pop_back();
+    segmentXVec.pop_back();
+    segmentYVec.pop_back();
     //Serial.println("POPPED");
   }
   if (snake1.is_alive) {
