@@ -1,7 +1,9 @@
+#include <Vector.h>
+
 #include <Arduino.h>
 #include <stdint.h>
-#include <vector>
-#include <queue>
+// #include <vector>
+// #include <queue>
 #include <Adafruit_NeoPixel.h>
 #include "init.h"
 #include "7segment.h"
@@ -22,10 +24,10 @@ class Snake {
 public:
   int position[2] = { START_X, START_Y };
   int velocity[2];
-  int length = 4; // was 4
+  int length = 2; // was 4
   Array segments_x;
   Array segments_y;
-  vector<int> segmentXVec, segmentYVec;
+  // Vector<int> segmentXVec, segmentYVec;
   Direction current_direction;
   uint32_t headColor = Adafruit_NeoPixel::Color(255, 0, 0);
   uint32_t bodyColor = Adafruit_NeoPixel::Color(0, 255, 0);
@@ -110,8 +112,9 @@ void loop() {
     // Yousif's 60FPS hack :D
     for (int i = 0; i < 22; i++) {
       snake1.check_inputs();
-      delay(16);
+      delay(3);
     }
+    strip.setPixelColor(0, strip.Color(0,0,0));
   } else {  // When you die
     //call end_screen
     // Serial.println("ENDGAME STATE");
@@ -123,6 +126,7 @@ void loop() {
   if (timer.isTimeOver) {  // GAMEOVER
     timer.restart();
   }
+  
 }
 
 // INITIALIZE CLASSES
@@ -147,6 +151,11 @@ void Apple::spawn_random() {
 // RECOMEND ADDIDNG THIS METHOD TO THE SNAKE
 bool Apple::check_collision(Snake snake1) {
   for (int i = 0; i < snake1.length; i++) {                                            // Get the length of the snake
+  /*
+    if (snake1.segmentXVec.at(i) == position[0] && snake1.segmentYVec.at(i) == position[1]) {  // Check if the snake position is the same of the apple
+      return true;
+    }
+    */
     if (snake1.segments_x[i] == position[0] && snake1.segments_y[i] == position[1]) {  // Check if the snake position is the same of the apple
       return true;
     }
@@ -233,14 +242,14 @@ void Snake::check_death() {
 }
 
 bool Snake::head_on_position(int xPos, int yPos) {
-  return (segments_x[length - 1] == xPos && segments_y[length - 1] == yPos);
+  return (segments_x[0] == xPos && segments_y[0] == yPos);
 }
 
 void Snake::show() {
-  for (int i = 0; i < length - 1; i++) {
+  strip.setPixelColor(xy_to_i(segments_x[length - 1], segments_y[length - 1]), headColor);
+  for (int i = 1; i < length - 1; i++) {
     strip.setPixelColor(xy_to_i(segments_x[i], segments_y[i]), bodyColor);
   }
-  strip.setPixelColor(xy_to_i(segments_x[length - 1], segments_y[length - 1]), headColor);
   strip.show();
 }
 
@@ -261,21 +270,11 @@ void Snake::update() {
   position[0] %= NUM_LED_STRIPS;
   position[1] %= LEDS_PER_STRIP;
 
-  // if (!row_is_odd && !is_switched) {
-  //   position[0] = (((position[0] + velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
-  // } else if (row_is_odd && !is_switched) {
-  //   position[0] = LEDS_PER_STRIP - 1 - (((position[0] + velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
-  //   is_switched = true;
-  // } else if (!row_is_odd && is_switched) {
-  //   position[0] = LEDS_PER_STRIP - 1 - (((position[0] + velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
-  //   is_switched = false;
-  // } else if (is_switched) {
-  //   position[0] = (((position[0] - velocity[0]) % LEDS_PER_STRIP) + LEDS_PER_STRIP) % LEDS_PER_STRIP;
-  // }
-
 
   segments_x.push_back(position[0]);
   segments_y.push_back(position[1]);
+  // segmentXVec.insert(0, position[0]);
+  // segmentYVec.insert(0, position[1]);
 
   if (head_on_position(apple1.position[0], apple1.position[1])) {
     length++;
@@ -288,6 +287,8 @@ void Snake::update() {
     strip.setPixelColor(xy_to_i(segments_x[0], segments_y[0]), strip.Color(0, 0, 0));
     segments_x.pop_back();
     segments_y.pop_back();
+    // segmentXVec.pop_back();
+    // segmentYVec.pop_back();
     //Serial.println("POPPED");
   }
   if (snake1.is_alive) {
