@@ -1,5 +1,7 @@
 #include <Arduino.h>
 #include <stdint.h>
+#include <vector>
+#include <queue>
 #include <Adafruit_NeoPixel.h>
 #include "init.h"
 #include "7segment.h"
@@ -20,9 +22,10 @@ class Snake {
 public:
   int position[2] = { START_X, START_Y };
   int velocity[2];
-  int length = 4;
+  int length = 4; // was 4
   Array segments_x;
   Array segments_y;
+  vector<int> segmentXVec, segmentYVec;
   Direction current_direction;
   uint32_t headColor = Adafruit_NeoPixel::Color(255, 0, 0);
   uint32_t bodyColor = Adafruit_NeoPixel::Color(0, 255, 0);
@@ -94,16 +97,16 @@ void loop() {
   apple1.show();
   if (snake1.is_alive) {
     snake1.update();
-    Serial.print("px = ");
-    Serial.print(snake1.position[0]);
-    Serial.print(", py = ");
-    Serial.print(snake1.position[1]);
-    Serial.print(", i = ");
-    Serial.print(position_to_i(snake1.position));
-    Serial.print(", vx = ");
-    Serial.print(snake1.velocity[0]);
-    Serial.print(", vy = ");
-    Serial.println(snake1.velocity[1]);
+    // Serial.print("px = ");
+    // Serial.print(snake1.position[0]);
+    // Serial.print(", py = ");
+    // Serial.print(snake1.position[1]);
+    // Serial.print(", i = ");
+    // Serial.print(position_to_i(snake1.position));
+    // Serial.print(", vx = ");
+    // Serial.print(snake1.velocity[0]);
+    // Serial.print(", vy = ");
+    // Serial.println(snake1.velocity[1]);
     // Yousif's 60FPS hack :D
     for (int i = 0; i < 22; i++) {
       snake1.check_inputs();
@@ -111,7 +114,7 @@ void loop() {
     }
   } else {  // When you die
     //call end_screen
-    Serial.println("ENDGAME STATE");
+    // Serial.println("ENDGAME STATE");
     screen_clear(strip);  // Not working bc of TinkerCad(?)
     return;
   }
@@ -127,8 +130,8 @@ void loop() {
 void Apple::spawn_random() {
   do {
     // random(0, TOTAL_LEDS) -> We make sure that the limit is always within the number of LEDs
-    int randNum = random(0, TOTAL_LEDS)
-    position[0] = (randNum * NUM_LED_STRIPS + TOTAL_LEDS)  % NUM_LED_STRIPS;
+    int randNum = random(0, TOTAL_LEDS);
+    position[0] = (randNum * 2 + 200)  % NUM_LED_STRIPS;
     position[1] = (randNum * position[0]) % LEDS_PER_STRIP;
   } while (check_collision(snake1));  // Look for another position if and only if The apple is in the SNAKE
 
@@ -219,15 +222,18 @@ void Snake::check_inputs() {
 }
 
 void Snake::check_death() {
-  for (int i = 1; i < length; i++) {
+  for (int i = 1; i < length - 1; i++) {
     if (head_on_position(segments_x[i], segments_y[i])) {
+      Serial.print("Segment ");
+      Serial.print(i);
+      Serial.print(" bonked head\n");
       is_alive = false;
     }
   }
 }
 
 bool Snake::head_on_position(int xPos, int yPos) {
-  return (segments_x[0] == xPos && segments_y[0] == yPos);
+  return (segments_x[length - 1] == xPos && segments_y[length - 1] == yPos);
 }
 
 void Snake::show() {
@@ -288,7 +294,7 @@ void Snake::update() {
     snake1.check_death();
   }
   if (!snake1.is_alive) {
-    Serial.println("YOU'RE DEAD");
+    Serial.println("YOU'RE ALL BONKED UP");
     screen_clear(strip);
   } else {
     snake1.show();

@@ -10,7 +10,7 @@ int Array::operator[](int index) const {
   if (index >= 0 && index < size) {
     return data[index];
   } else {
-    Serial.println("Index out of bounds");
+    //Serial.println("Index out of bounds");
     return -1;
     //Serial.println(index);
   }
